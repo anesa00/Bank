@@ -11,6 +11,6 @@ namespace Bank.Accounts
 		public abstract int GetAccountNumber();
 		public abstract double GetSaldo();
 		public abstract string BankStatment();
-		public abstract string MonthStatment();
+		public abstract string MonthStatment(int month);
 	}
 }
