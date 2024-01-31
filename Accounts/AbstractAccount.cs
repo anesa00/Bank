@@ -4,9 +4,9 @@ namespace Bank.Accounts
 {
 	public abstract class AbstractAccount()
 	{
-		private int _accountNumber;
-		private double _saldo;
-		private List<Transaction> _transactions;
+		protected int _accountNumber;
+		protected double _saldo;
+		protected List<Transaction> _transactions;
 		public double AccountMaintenance { get; set; }
 		public abstract int GetAccountNumber();
 		public abstract double GetSaldo();
