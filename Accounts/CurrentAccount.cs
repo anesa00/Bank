@@ -71,7 +71,7 @@ namespace Bank.Accounts
 			}
 
 			if (amount + services > _saldo + Limit)
-				throw new ArgumentOutOfRangeException("You don't have anought money on your account!");
+				throw new ArgumentOutOfRangeException("You don't have enought money on your account!");
 
 			_saldo -= amount + services;
 			if (_saldo < 0)
@@ -95,7 +95,7 @@ namespace Bank.Accounts
 			}
 
 			if (amount > _saldo + Limit)
-				throw new ArgumentOutOfRangeException("You don't have anought money on your account!");
+				throw new ArgumentOutOfRangeException("You don't have enought money on your account!");
 
 			_saldo -= amount;
 			if (_saldo < 0)
