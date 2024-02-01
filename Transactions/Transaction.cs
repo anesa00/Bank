@@ -32,6 +32,10 @@ namespace Bank.Transactions
 			_quantity = quantity;
 			_bankingServices = services;
 		}
+		public DateTime GetDateTime() 
+		{ 
+			return _date; 
+		}
 		public string TransactionStatement()
 		{
 
