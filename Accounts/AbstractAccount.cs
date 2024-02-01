@@ -10,6 +10,7 @@ namespace Bank.Accounts
 		public double AccountMaintenance { get; set; }
 		public abstract int GetAccountNumber();
 		public abstract double GetSaldo();
+		public abstract List<Transaction> GetTransactions();
 		public abstract string BankStatment();
 		public abstract string MonthStatment(int month);
 	}

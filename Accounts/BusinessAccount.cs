@@ -32,6 +32,10 @@ namespace Bank.Accounts
             DailyTransactionCounter++;
             MonthlyTransactionCounter++;
         }
+        private void TransactionStatement(string statement)
+        {
+            Console.WriteLine(statement);
+        }
         public BusinessAccount() 
         {
             _transactions = new List<Transaction>();
@@ -58,6 +62,10 @@ namespace Bank.Accounts
         {
             return _saldo;
         }
+        public override List<Transaction> GetTransactions()
+        {
+            return _transactions;
+        }
         public override string BankStatment()
         {
             var statements = "";
@@ -82,7 +90,7 @@ namespace Bank.Accounts
 
             return statements;
         }
-        public void MakeATransaction(int accountNumber, double amount, double services, string description = "")
+        public void MakeATransaction(int accountNumber, double amount, double services, string description = "", bool statement = true)
         {
             try
             {
@@ -107,8 +115,11 @@ namespace Bank.Accounts
 
             _transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, services));
             IncreaseCounters();
+
+            if (statement)
+                TransactionStatement(_transactions.Last().TransactionStatement());
         }
-        public void FundsWithdrawal(double amount)
+        public void FundsWithdrawal(double amount, bool statement = true, bool statement = true)
         {
             try
             {
@@ -134,8 +145,11 @@ namespace Bank.Accounts
             _transactions.Add(new Transaction(new DateTime(), "You have withdrawn " + amount + "BAM from your account.", amount));
             IncreaseCounters();
 
+            if (statement)
+                TransactionStatement(_transactions.Last().TransactionStatement());
+
         }
-        public void FundsDeposit(double amount)
+        public void FundsDeposit(double amount, bool statement = true)
         {
             try
             {
@@ -151,6 +165,9 @@ namespace Bank.Accounts
             _saldo += amount;
             _transactions.Add(new Transaction(new DateTime(), "You have deposited " + amount + "BAM into your account.", amount));
             IncreaseCounters();
+
+            if (statement)
+                TransactionStatement(_transactions.Last().TransactionStatement());
         }
     }
 }

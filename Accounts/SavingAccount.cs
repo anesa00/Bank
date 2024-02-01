@@ -22,6 +22,10 @@ namespace Bank.Accounts
             if (TransactionCounter > TransactionLimit)
                 throw new ArgumentOutOfRangeException("You can no longer perform the transaction; you have reached the limit!");
         }
+        private void TransactionStatement(string statement)
+        {
+            Console.WriteLine(statement);
+        }
         public SavingAccount()
         {
             _transactions = new List<Transaction>();
@@ -46,6 +50,10 @@ namespace Bank.Accounts
         public override double GetSaldo()
         {
             return _saldo;
+        }
+        public override List<Transaction> GetTransactions()
+        {
+            return _transactions;
         }
         public override string BankStatment()
         {
@@ -85,7 +93,7 @@ namespace Bank.Accounts
 
             _saldo += bankInterest;
         }
-        public void MakeATransaction(int accountNumber, double amount, double services, string description = "")
+        public void MakeATransaction(int accountNumber, double amount, double services, string description = "", bool statement = true)
         {
             try
             {
@@ -105,8 +113,11 @@ namespace Bank.Accounts
 
             _transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, services));
             TransactionCounter++;
+
+            if (statement)
+                TransactionStatement(_transactions.Last().TransactionStatement());
         }
-        public void FundsWithdrawal(double amount)
+        public void FundsWithdrawal(double amount, bool statement = true)
         {
             try
             {
@@ -126,8 +137,11 @@ namespace Bank.Accounts
 
             _transactions.Add(new Transaction(new DateTime(), "You have withdrawn " + amount + "BAM from your account.", amount));
             TransactionLimit++;
+
+            if (statement)
+                TransactionStatement(_transactions.Last().TransactionStatement());
         }
-        public void FundsDeposit(double amount)
+        public void FundsDeposit(double amount, bool statement = true)
         {
             try
             {
@@ -143,6 +157,9 @@ namespace Bank.Accounts
             _saldo += amount;
             _transactions.Add(new Transaction(new DateTime(), "You have deposited " + amount + "BAM into your account.", amount));
             TransactionLimit++;
+
+            if (statement)
+                TransactionStatement(_transactions.Last().TransactionStatement());
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,10 @@ namespace Bank.Accounts
         {
             if (amount < 0)
                 throw new ArgumentOutOfRangeException("The amount can't be a negative number!");
+        }
+        private void TransactionStatement(string statement)
+        {
+            Console.WriteLine(statement);
         }
         public BrokerageAccount()
         {
@@ -62,6 +67,11 @@ namespace Bank.Accounts
         {
             return _accountNumber;
         }
+        public override List<Transaction> GetTransactions()
+        {
+            return _transactions;
+        }
+
         public string SeePortfolio()
         {
             var instruments = "";
@@ -97,7 +107,8 @@ namespace Bank.Accounts
 
             return statements;
         }
-        public void BuyInstrument(double amount, int accountNumber,string type, string instrument, int quantity, double services, string description = "")
+        public void BuyInstrument(double amount, int accountNumber, string type, string instrument, int quantity, double services, string description = "", 
+            bool statement = true)
         {
             try
             {
@@ -121,9 +132,12 @@ namespace Bank.Accounts
             else
                 _portfolio[index].Quantity += quantity;
 
-            _transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, instrument, quantity, services))
+            _transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, instrument, quantity, services));
+
+            if (statement)
+                TransactionStatement(statement);
         }
-        public void FundsDeposit(double amount)
+        public void FundsDeposit(double amount, bool statement = true)
         {
             try
             {
@@ -135,6 +149,30 @@ namespace Bank.Accounts
             }
             _saldo += amount;
             _transactions.Add(new Transaction(new DateTime(), "You have deposited " + amount + "BAM into your account.", amount));
+            
+            if (statement)
+                TransactionStatement(_transactions.Last().TransactionStatement());
+        }
+        public void FundsWithdrawal(double amount, bool statement = true)
+        {
+            try
+            {
+                CheckingAmount(amount);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+
+                throw;
+            }
+
+            if (amount > _saldo)
+                throw new ArgumentOutOfRangeException("You don't have enought money on your account!");
+
+            _saldo -= amount;
+            _transactions.Add(new Transaction(new DateTime(), "You have withdrawn " + amount + "BAM from your account.", amount));
+
+            if (statement)
+                TransactionStatement(_transactions.Last().TransactionStatement());
         }
     }
 }

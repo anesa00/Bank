@@ -15,6 +15,10 @@ namespace Bank.Accounts
 			if (amount < 0)
 				throw new ArgumentOutOfRangeException("The amount can't be a negative number!");
 		}
+		private void TransactionStatement(string statement)
+		{
+			Console.WriteLine(statement);
+		}
 		public CurrentAccount()
 		{
 			_transactions = new List<Transaction>();
@@ -34,6 +38,10 @@ namespace Bank.Accounts
 		public override double GetSaldo()
 		{
 			return _saldo;
+		}
+		public override List<Transaction> GetTransactions()
+		{
+			return _transactions;
 		}
 		public override string BankStatment()
 		{
@@ -59,7 +67,7 @@ namespace Bank.Accounts
 
 			return statements;
 		}
-		public void MakeATransaction(int accountNumber, double amount, double services, string description = "")
+		public void MakeATransaction(int accountNumber, double amount, double services, string description = "", bool statement = true)
 		{
 			try
 			{
@@ -83,7 +91,7 @@ namespace Bank.Accounts
 
 			_transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, services));
 		}
-		public void FundsWithdrawal(double amount)
+		public void FundsWithdrawal(double amount, bool statement = true)
 		{
 			try
 			{
@@ -106,8 +114,11 @@ namespace Bank.Accounts
 			}
 
 			_transactions.Add(new Transaction(new DateTime(), "You have withdrawn " + amount + "BAM from your account.", amount));
+
+			if (statement)
+				TransactionStatement(_transactions.Last().TransactionStatement());
 		}
-		public void FundsDeposit(double amount)
+		public void FundsDeposit(double amount, bool statement = true)
 		{
 			try
 			{
@@ -121,6 +132,9 @@ namespace Bank.Accounts
 
 			_saldo += amount;
 			_transactions.Add(new Transaction(new DateTime(), "You have deposited " + amount + "BAM into your account.", amount));
+
+			if (statement)
+				TransactionStatement(_transactions.Last().TransactionStatement());
 		}
 	}
 }
