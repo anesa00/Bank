@@ -19,12 +19,13 @@ namespace Bank.Accounts
 		{
 			_transactions = new List<Transaction>();
 		}
-		public CurrentAccount(int accountNumber, double accountMaintenance, double saldo = 0) 
+		public CurrentAccount(int accountNumber, double accountMaintenance, double saldo = 0, double limit = 0) 
 			: this()
 		{
 			_accountNumber = accountNumber;
 			_saldo = saldo;
 			AccountMaintenance = accountMaintenance;
+			Limit = limit;
 		}
 		public override int GetAccountNumber()
 		{
