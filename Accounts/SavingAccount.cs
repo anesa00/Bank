@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bank.Transactions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,7 @@ namespace Bank.Accounts
             TransactionCounter = 0;
            
         }
-        public SavingAccount(int accountNumber, double accountMaintenance, double saldo = 0, double minSlado = 0, double bankInterest = 0, int transactionLimit = 0)
+        public SavingAccount(long accountNumber, double accountMaintenance, double saldo = 0, double minSlado = 0, double bankInterest = 0, int transactionLimit = 0)
             : this()
         {
             _accountNumber = accountNumber;
@@ -43,7 +44,7 @@ namespace Bank.Accounts
             TransactionLimit = transactionLimit;
         }
 
-        public override int GetAccountNumber()
+        public override long GetAccountNumber()
         {
             return _accountNumber;
         }
@@ -83,7 +84,7 @@ namespace Bank.Accounts
         {
             try
             {
-                CheckingAmount(amount);
+                CheckingAmount(bankInterest);
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -93,7 +94,7 @@ namespace Bank.Accounts
 
             _saldo += bankInterest;
         }
-        public void MakeATransaction(int accountNumber, double amount, double services, string description = "", bool statement = true)
+        public void MakeATransaction(long accountNumber, double amount, double services, string description = "", bool statement = true)
         {
             try
             {
