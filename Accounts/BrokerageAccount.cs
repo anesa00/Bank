@@ -1,11 +1,4 @@
 ﻿using Bank.Transactions;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bank.Accounts
 {
@@ -173,6 +166,28 @@ namespace Bank.Accounts
 
             if (statement)
                 TransactionStatement(_transactions.Last().TransactionStatement());
+        }
+        public void SoldInstrument(Transaction transaction)
+        {
+            var resoult = _portfolio.Find(item => item.Name == transaction.GetInstrument());
+            if (resoult.Equals(default(Instrument)))
+                throw new ArgumentException("There is no instrument in the portfolio!");
+            if (transaction.GetQuantity() > resoult.Quantity)
+                throw new ArgumentException("You cannot sell this instrument, you do not have enough in stock!");
+
+            _saldo += transaction.GetAmount() * transaction.GetQuantity();
+            resoult.Quantity -= transaction.GetQuantity();
+            if (resoult.Quantity == 0)
+                _portfolio.Remove(resoult);
+
+            _transactions.Add(new Transaction(transaction.GetDateTime(), "Deposit: " + transaction.GetDescription(), transaction.GetAmount(),
+                transaction.GetAccountNumber(), transaction.GetInstrument(), transaction.GetQuantity()));
+        }
+        public override void ReceiveTransaction(Transaction transaction)
+        {
+            _transactions.Add(new Transaction(transaction.GetDateTime(), "Deposit: " + transaction.GetDescription(), transaction.GetAmount(),
+                transaction.GetAccountNumber()));
+            _saldo += transaction.GetAmount();
         }
     }
 }

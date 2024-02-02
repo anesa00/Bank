@@ -18,14 +18,14 @@ namespace Bank.Transactions
 			_amount = amount;
 		}
 
-		public Transaction(DateTime date, string description, double amount, long accountNumber, double services)
+		public Transaction(DateTime date, string description, double amount, long accountNumber, double services = 0)
 			: this(date, description, amount)
 		{
 			_accountNumber = accountNumber;
 			_bankingServices = services;
 		}
 
-		public Transaction(DateTime date, string description, double amount, long accountNumber, string instrument, int quantity, double services)
+		public Transaction(DateTime date, string description, double amount, long accountNumber, string instrument, int quantity, double services = 0)
 			: this(date, description, amount)
 		{
 			_accountNumber = accountNumber;
@@ -36,6 +36,26 @@ namespace Bank.Transactions
 		public DateTime GetDateTime() 
 		{ 
 			return _date; 
+		}
+		public string GetDescription()
+		{
+			return _description;
+		}
+		public double GetAmount()
+		{
+			return _amount;
+		}
+		public long GetAccountNumber()
+		{
+			return _accountNumber;
+		}
+		public string GetInstrument()
+		{
+			return _instrument;
+		}
+		public int GetQuantity()
+		{
+			return _quantity;
 		}
 		public string TransactionStatement()
 		{

@@ -13,5 +13,6 @@ namespace Bank.Accounts
 		public abstract List<Transaction> GetTransactions();
 		public abstract string BankStatment();
 		public abstract string MonthStatment(int month);
+		public abstract void ReceiveTransaction(Transaction transaction);
 	}
 }
