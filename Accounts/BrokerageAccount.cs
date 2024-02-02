@@ -34,18 +34,18 @@ namespace Bank.Accounts
         }
         public BrokerageAccount()
         {
-            _transaction = new List<Transaction>();
-            _portoflio = new List<Instrument>();
+            _transactions = new List<Transaction>();
+            _portfolio = new List<Instrument>();
             _totalPortfolioValue = 0;
         }
-        public BrokerageAccount(int accountNumber, double accountMaintenance, double saldo = 0)
+        public BrokerageAccount(long accountNumber, double accountMaintenance, double saldo = 0)
             : this()
         {
             _accountNumber = accountNumber;
             AccountMaintenance = accountMaintenance;
             _saldo = saldo;
         }
-        public BrokerageAccount(int accountNumber, double accountMaintenance, double saldo, List<Instrument> portfolio)
+        public BrokerageAccount(long accountNumber, double accountMaintenance, double saldo, List<Instrument> portfolio)
             : this(accountNumber, accountMaintenance, saldo)
         {
             _portfolio = portfolio;
@@ -63,7 +63,7 @@ namespace Bank.Accounts
         {
             return _saldo;
         }
-        public override int GetAccountNumber()
+        public override long GetAccountNumber()
         {
             return _accountNumber;
         }
@@ -107,12 +107,12 @@ namespace Bank.Accounts
 
             return statements;
         }
-        public void BuyInstrument(double amount, int accountNumber, string type, string instrument, int quantity, double services, string description = "", 
+        public void BuyInstrument(double amount, long accountNumber, string type, string instrument, int quantity, double services, string description = "", 
             bool statement = true)
         {
             try
             {
-                CheckingAmount()
+                CheckingAmount(amount);
             }
             catch(ArgumentOutOfRangeException e)
             {
@@ -126,22 +126,22 @@ namespace Bank.Accounts
                 throw new ArgumentException("You don't have enought money on your account!");
 
             _saldo -= amount * quantity;
-            var index = _portfolio.FindIndex(item => item.Name == instrument);
-            if (index == -1)
+            var resoult = _portfolio.Find(item => item.Name == instrument);
+            if (resoult.Equals(default(Instrument)))
                 _portfolio.Add(new Instrument { Name = instrument, Type = type, Price = amount, Quantity = quantity });
-            else
-                _portfolio[index].Quantity += quantity;
+            else 
+                resoult.Quantity += quantity;
 
             _transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, instrument, quantity, services));
 
             if (statement)
-                TransactionStatement(statement);
+                TransactionStatement(_transactions.Last().TransactionStatement());
         }
         public void FundsDeposit(double amount, bool statement = true)
         {
             try
             {
-                CheckingAmount()
+                CheckingAmount(amount);
             }
             catch (ArgumentOutOfRangeException e)
             {

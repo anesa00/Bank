@@ -23,7 +23,7 @@ namespace Bank.Accounts
 		{
 			_transactions = new List<Transaction>();
 		}
-		public CurrentAccount(int accountNumber, double accountMaintenance, double saldo = 0, double limit = 0) 
+		public CurrentAccount(long accountNumber, double accountMaintenance, double saldo = 0, double limit = 0) 
 			: this()
 		{
 			_accountNumber = accountNumber;
@@ -31,7 +31,7 @@ namespace Bank.Accounts
 			AccountMaintenance = accountMaintenance;
 			Limit = limit;
 		}
-		public override int GetAccountNumber()
+		public override long GetAccountNumber()
 		{
 			return _accountNumber;
 		}
@@ -67,7 +67,7 @@ namespace Bank.Accounts
 
 			return statements;
 		}
-		public void MakeATransaction(int accountNumber, double amount, double services, string description = "", bool statement = true)
+		public void MakeATransaction(long accountNumber, double amount, double services, string description = "", bool statement = true)
 		{
 			try
 			{
@@ -90,6 +90,9 @@ namespace Bank.Accounts
 			}
 
 			_transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, services));
+
+			if (statement)
+				TransactionStatement(_transactions.Last().TransactionStatement());
 		}
 		public void FundsWithdrawal(double amount, bool statement = true)
 		{

@@ -7,7 +7,8 @@ namespace Bank.Transactions
 	{
 		DateTime _date;
 		string _description, _instrument;
-		int _accountNumber, _quantity;
+		long _accountNumber;
+		int _quantity;
 		double _amount, _bankingServices;
 
 		public Transaction(DateTime date, string description, double amount)
@@ -17,14 +18,14 @@ namespace Bank.Transactions
 			_amount = amount;
 		}
 
-		public Transaction(DateTime date, string description, double amount, int accountNumber, double services)
+		public Transaction(DateTime date, string description, double amount, long accountNumber, double services)
 			: this(date, description, amount)
 		{
 			_accountNumber = accountNumber;
 			_bankingServices = services;
 		}
 
-		public Transaction(DateTime date, string description, double amount, int accountNumber, string instrument, int quantity, double services)
+		public Transaction(DateTime date, string description, double amount, long accountNumber, string instrument, int quantity, double services)
 			: this(date, description, amount)
 		{
 			_accountNumber = accountNumber;

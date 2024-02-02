@@ -14,7 +14,7 @@ namespace Bank.Accounts
         public string AccountCurrency { get; set; }
         public int DailyTransactionLimit { get; set; }
         public int MonthlyTransactionLimit { get; set; }
-        public int Limit { get; set; }
+        public double Limit { get; set; }
         private void CheckingAmount(double amount)
         {
             if (amount < 0)
@@ -39,10 +39,10 @@ namespace Bank.Accounts
         public BusinessAccount() 
         {
             _transactions = new List<Transaction>();
-            DailyTranscationCounter = 0;
+            DailyTransactionCounter = 0;
             MonthlyTransactionCounter= 0;
         }
-        public BusinessAccount(int accountNumber, double accountMaintenance, double saldo = 0, string accountCurrency = "BAM", int dailyTransactionLimit = 0, 
+        public BusinessAccount(long accountNumber, double accountMaintenance, double saldo = 0, string accountCurrency = "BAM", int dailyTransactionLimit = 0, 
             int monthlyTransactionLimit = 0, int limit = 0)
             : this()
         {
@@ -54,7 +54,7 @@ namespace Bank.Accounts
             MonthlyTransactionLimit = monthlyTransactionLimit;
             Limit = limit;
         }
-        public override int GetAccountNumber()
+        public override long GetAccountNumber()
         {
             return _accountNumber;
         }
@@ -90,7 +90,7 @@ namespace Bank.Accounts
 
             return statements;
         }
-        public void MakeATransaction(int accountNumber, double amount, double services, string description = "", bool statement = true)
+        public void MakeATransaction(long accountNumber, double amount, double services, string description = "", bool statement = true)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace Bank.Accounts
                 throw;
             }
 
-            if (amount + services > _saldo + limit)
+            if (amount + services > _saldo + Limit)
                 throw new ArgumentOutOfRangeException("You don't have enought money on your account!");
 
             _saldo -= amount + services;
@@ -119,7 +119,7 @@ namespace Bank.Accounts
             if (statement)
                 TransactionStatement(_transactions.Last().TransactionStatement());
         }
-        public void FundsWithdrawal(double amount, bool statement = true, bool statement = true)
+        public void FundsWithdrawal(double amount, bool statement = true)
         {
             try
             {
