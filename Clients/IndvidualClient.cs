@@ -1,11 +1,6 @@
 ﻿using Bank.Accounts;
 using Bank.Cards;
 using Bank.Loans;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bank.Clients
 {
