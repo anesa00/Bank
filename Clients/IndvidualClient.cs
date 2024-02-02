@@ -27,7 +27,7 @@ namespace Bank.Clients
             if (index == -1)
                 throw new ArgumentException("There is no account with this account number!");
         }
-        public Indvidual(string name, string surname, DateTime dateBirth, int age, string JMBG, string adress, string accountType, long accountNumber,
+        public IndvidualClient(string name, string surname, DateTime dateBirth, int age, string JMBG, string adress, string accountType, long accountNumber,
             string phonoNumber, string email = "") 
         {
             Name = name;

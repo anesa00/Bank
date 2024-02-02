@@ -1,9 +1,4 @@
 ﻿using Bank.Transactions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bank.Accounts
 {
@@ -168,6 +163,12 @@ namespace Bank.Accounts
 
             if (statement)
                 TransactionStatement(_transactions.Last().TransactionStatement());
+        }
+        public override void ReceiveTransaction(Transaction transaction)
+        {
+            _transactions.Add(new Transaction(transaction.GetDateTime(), "Deposit: " + transaction.GetDescription(), transaction.GetAmount(),
+                transaction.GetAccountNumber()));
+            _saldo += transaction.GetAmount();
         }
     }
 }
