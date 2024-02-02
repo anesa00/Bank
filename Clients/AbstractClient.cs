@@ -14,7 +14,6 @@ namespace Bank.Clients
     {
         public List<AbstractAccount> Accounts { get; set; }
         public List<Card> Cards { get; set; }
-        public abstract void OpenAccount(string accountType, long accountNumber);
         public abstract void CloseAccount(long accountNumber);
         public abstract void GetCard(CardType card, long accountNumber, long cardNumber, int pin, int cvv, DateOnly cardExpiry);
         public abstract void CloseCard(long cardNumber);
