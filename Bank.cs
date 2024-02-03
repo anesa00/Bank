@@ -3,11 +3,9 @@ using Bank.ATM;
 using Bank.Cards;
 using Bank.Clients;
 using Bank.Employees;
+using Bank.Loans;
 using Bank.Transactions;
 using Bank.Utility_Classes;
-using System;
-using System.Security.Principal;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bank
 {
@@ -20,9 +18,11 @@ namespace Bank
         public Person Owner { get; set; }
         private static List<AbstractClient> _clients;
         private List<Employee> _employees;
-        private static List<ATM> _ATM;
+        private static List<Card> _cards;
+        private static List<AutomatedTellerMachine> _ATM;
         private double _saldo;
         private List<Transaction> _transcations;
+        private List<Loan> _loans;
         private AbstractClient FindAccount(long accountNumber)
         {
             var client = _clients.Find(client =>
@@ -79,7 +79,7 @@ namespace Bank
             if(_clients == null)
                 _clients = new List<AbstractClient>();
             if (_ATM == null)
-                _ATM = new List<Bank.ATM>();
+                _ATM = new List<AutomatedTellerMachine>();
         }
         public Bank(string swiftCode, string adress, string name, double saldo, string phoneNumber, string nameOfOwner, string surnameOfOwner, DateTime birthDateOfOwner, 
             int ageOfOwner, string JMBGOfOwner, string adressOfOwner, string phoneNumberOfOwner, string emailOfOwner = "")
@@ -91,8 +91,9 @@ namespace Bank
             PhoneNumber = phoneNumber;
             Owner = new Person(nameOfOwner, surnameOfOwner, birthDateOfOwner, ageOfOwner, JMBGOfOwner, adressOfOwner, phoneNumberOfOwner, emailOfOwner);
         }
-        public Bank(string swiftCode, string adress, string name, double saldo, string phoneNumber, List<ATM> ATM, string nameOfOwner, string surnameOfOwner, 
-            DateTime birthDateOfOwner, int ageOfOwner, string JMBGOfOwner, string adressOfOwner, string phoneNumberOfOwner, string emailOfOwner = "")
+        public Bank(string swiftCode, string adress, string name, double saldo, string phoneNumber, List<AutomatedTellerMachine> ATM, string nameOfOwner, 
+            string surnameOfOwner, DateTime birthDateOfOwner, int ageOfOwner, string JMBGOfOwner, string adressOfOwner, string phoneNumberOfOwner, 
+            string emailOfOwner = "")
             : this(swiftCode, adress, name, saldo, phoneNumber, nameOfOwner, surnameOfOwner, birthDateOfOwner, ageOfOwner, JMBGOfOwner, adressOfOwner, 
                   phoneNumberOfOwner, emailOfOwner)
         {
@@ -109,6 +110,10 @@ namespace Bank
             if (index == -1)
                 throw new ArgumentException("There is no employee with this JMBG!");
             _employees.RemoveAt(index);
+        }
+        public List<Employee> GetEmployees()
+        {
+            return _employees;
         }
         public static  List<AbstractClient> GetClients()
         {
@@ -176,7 +181,9 @@ namespace Bank
             try
             {
                 var client = GetClient(JMBG);
-                client.OpenCard(card, accountNumber, GenerateCardNumber(), GenerateNumber(1000, 10000), GenerateNumber(100, 1000), DateTime.Now.AddYears(3));
+                long number= GenerateCardNumber();
+                client.OpenCard(card, accountNumber, number, GenerateNumber(1000, 10000), GenerateNumber(100, 1000), DateTime.Now.AddYears(3));
+                _cards.Add(client.GetCard(number));
             }
             catch (ArgumentException)
             {
@@ -190,6 +197,7 @@ namespace Bank
                 var client = GetClient(JMBG);
 
                 client.CloseCard(cardNumber);
+                _cards.Remove(GetACard(cardNumber));
             }
             catch (ArgumentException)
             {
@@ -202,8 +210,13 @@ namespace Bank
             try
             {
                 var client = GetClient(JMBG);
-                if(client is IClient c)
-                    c.TakeLoan(interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms);
+                if (client is IClient c)
+                {
+                    int id = GenerateNumber(100, 10000);
+                    c.TakeLoan(id, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms);
+                    _saldo += insuranceAndFess + interestRate;
+                    _loans.Add(new Loan(id, interestRate * principal, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms));
+                }    
             }
             catch (Exception)
             {
@@ -211,13 +224,27 @@ namespace Bank
                 throw;
             }
         }
+        public Loan GetLoan(int id)
+        {
+            return _loans.Find(loan => loan.GetID() == id);
+        }
         public void CloseLoan(string JMBG)
         {
             try
             {
                 var client = GetClient(JMBG);
                 if (client is IClient c)
+                { 
                     c.CloseLoan();
+                }
+                if (client is IndvidualClient ic)
+                {
+                    _loans.Remove(ic.GetLoan());
+                }
+                else if(client is LegalEntityClient lec)
+                {
+                    _loans.Remove(lec.GetLoan());
+                }
             }
             catch (Exception)
             {
@@ -296,6 +323,30 @@ namespace Bank
 
                 throw;
             }
+        }
+        public List<Card> GetAllCards()
+        {
+            return _cards;
+        }
+        public Card GetACard(long cardNumber)
+        {
+            return _cards.Find(card => card.CardNumber == cardNumber);
+        }
+        public List<Transaction> GetAllTranscations()
+        {
+            return _transcations;
+        }
+        public List<AutomatedTellerMachine> GetAutomatedTellerMachines()
+        {
+            return _ATM;
+        }
+        public string GetSWIFTCode() 
+        {
+            return _swiftCode;
+        }
+        public List<Loan> GetAllLoans()
+        {
+            return _loans;
         }
     }
 }

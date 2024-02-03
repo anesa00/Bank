@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace Bank.Utility_Classes
 {
@@ -33,7 +29,7 @@ namespace Bank.Utility_Classes
         {
             return _JMBG;
         }
-        public string GetBirthDate()
+        public DateTime GetBirthDate()
         {
             return _birthDate;
         }

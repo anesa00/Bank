@@ -81,17 +81,21 @@ namespace Bank.Clients
             UserName = "";
             Password = "";
         }
-        public void TakeLoan(double interestRate, int loanTerm, double principal, double insuranceAndFess, string repaymentTerms)
+        public void TakeLoan(int id, double interestRate, int loanTerm, double principal, double insuranceAndFess, string repaymentTerms)
         {
             if (_loan != null)
                 throw new Exception("You have already taken the laon!");
-            _loan = new Loan(interestRate * principal, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms);
+            _loan = new Loan(id,interestRate * principal, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms);
         }
         public void CloseLoan()
         {
             if (_loan == null)
                 throw new Exception("You don't have any loan!");
             _loan = null;
+        }
+        public Loan GetLoan()
+        {
+            return _loan;
         }
         public override AbstractAccount GetAccount(long accountNumber)
         {
