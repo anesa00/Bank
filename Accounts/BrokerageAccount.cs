@@ -167,7 +167,7 @@ namespace Bank.Accounts
             if (statement)
                 TransactionStatement(_transactions.Last().TransactionStatement());
         }
-        public void SoldInstrument(Transaction transaction)
+        public void SellInstrument(Transaction transaction)
         {
             var resoult = _portfolio.Find(item => item.Name == transaction.GetInstrument());
             if (resoult.Equals(default(Instrument)))
