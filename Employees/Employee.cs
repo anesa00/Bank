@@ -6,13 +6,13 @@ namespace Bank.Employees
     public class Employee
     {
         public Person Person { get; set; }
-        private DateOnly _hireDate;
+        private DateTime _hireDate;
         public double Salary { get; set; }
         public Position Position { get; set; }
         public string Contract { get; set; }
 
         public Employee(string JMBG, DateTime birthDate, string name, string surname, int age, string adress, string email, string phoneNumber,
-            DateOnly hireDate, double salary, Position position, string contract)
+            DateTime hireDate, double salary, Position position, string contract)
         {
             Person = new Person(name, surname, birthDate, age, JMBG, adress, phoneNumber, email);
             _hireDate = hireDate;
@@ -20,7 +20,7 @@ namespace Bank.Employees
             Position = position;
             Contract = contract;
         }
-        public DateOnly GetHireDate()
+        public DateTime GetHireDate()
         {
             return _hireDate;
         }

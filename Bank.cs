@@ -89,6 +89,7 @@ namespace Bank
             Adress = adress;
             Name = name;
             PhoneNumber = phoneNumber;
+            _saldo = saldo;
             Owner = new Person(nameOfOwner, surnameOfOwner, birthDateOfOwner, ageOfOwner, JMBGOfOwner, adressOfOwner, phoneNumberOfOwner, emailOfOwner);
         }
         public Bank(string swiftCode, string adress, string name, double saldo, string phoneNumber, List<AutomatedTellerMachine> ATM, string nameOfOwner, 
@@ -100,7 +101,7 @@ namespace Bank
             _ATM = ATM;
         }
         public void AddEmployee(string JMBG, DateTime birthDate, string name, string surname, int age, string adress, string email, string phonoNumber,
-            DateOnly hireDate, double salary, Position position, string contract)
+            DateTime hireDate, double salary, Position position, string contract)
         {
             _employees.Add(new Employee(JMBG, birthDate, name, surname, age, adress, email, phonoNumber, hireDate, salary, position, contract));
         }
