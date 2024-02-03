@@ -1,13 +1,8 @@
 ﻿using Bank.Accounts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Bank.Utility_Classes;
 
 namespace Bank.Cards
 {
-    public enum CardType { Debit, Credit, Prepaid, Charged, Busines }
     public class Card
     {
         public AbstractAccount Account { get; set; }
@@ -50,6 +45,14 @@ namespace Bank.Cards
             {
                 account.FundsDeposit(amount, statement);
             }
+        }
+        public CardType GetType()
+        {
+            return _type;
+        }
+        public int GetPIN()
+        {
+            return _pin;
         }
     }
 }
