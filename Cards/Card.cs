@@ -15,9 +15,9 @@ namespace Bank.Cards
         private CardType _type;
         private int _pin;
         public int CVV { get; set; }
-        public DateOnly CardExpiry { get; set; }
+        public DateTime CardExpiry { get; set; }
 
-        public Card(AbstractAccount account, long cardNumber, CardType cardType, int pin, int cvv, DateOnly cardExpiry)
+        public Card(AbstractAccount account, long cardNumber, CardType cardType, int pin, int cvv, DateTime cardExpiry)
         {
             Account = account;
             CardNumber = cardNumber;

@@ -1,19 +1,12 @@
 ﻿using Bank.Accounts;
 using Bank.Cards;
 using Bank.Loans;
+using Bank.Utility_Classes;
 
 namespace Bank.Clients
 {
     public class IndvidualClient : AbstractClient, IClient
     {
-        private string _JMBG;
-        private DateTime _birthDate;
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public int Age { get; set; }
-        public string Adress { get; set; }
-        public string Email { get; set; }
-        public string PhonoNumber { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         private Loan _loan;
@@ -22,27 +15,16 @@ namespace Bank.Clients
             if (index == -1)
                 throw new ArgumentException("There is no account with this account number!");
         }
-        private IndvidualClient(string name, string surname, DateTime birthDate, int age, string JMBG, string adress, string phonoNumber, string email = "")
-        {
-            Name = name;
-            Surname = surname;
-            Age = age;
-            Adress = adress;
-            _JMBG = JMBG;
-            _birthDate = birthDate;
-            PhonoNumber = phonoNumber;
-            Email = email;
-        }
-        public IndvidualClient(string name, string surname, DateTime birthDate, int age, string JMBG, string adress, string phonoNumber, long accountNumber,
+        public IndvidualClient(string name, string surname, DateTime birthDate, int age, string JMBG, string adress, string phoneNumber, long accountNumber,
             double accountMaintenance, string email = "", double saldo = 0, double limit = 0)
-            : this(name, surname, birthDate, age, JMBG, adress, phonoNumber, email)
         {
+            Client = new Person(name, surname, birthDate, age, JMBG, adress, phoneNumber, email);
             OpenCurrentAccount(accountNumber, accountMaintenance, saldo, limit);
         }
-        public IndvidualClient(string name, string surname, DateTime birthDate, int age, string JMBG, string adress, string phonoNumber, long accountNumber, 
+        public IndvidualClient(string name, string surname, DateTime birthDate, int age, string JMBG, string adress, string phoneNumber, long accountNumber, 
             double accountMaintenance, string email = "", double saldo = 0, double minSaldo = 0, double bankInterest = 0, int transactionLimit = 0) 
-            : this(name, surname, birthDate, age, JMBG, adress, phonoNumber, email)
         {
+            Client = new Person(name, surname, birthDate, age, JMBG, adress, phoneNumber, email);
             OpenSavingAccount(accountNumber, accountMaintenance, saldo, minSaldo, bankInterest, transactionLimit);
         }
         public void OpenCurrentAccount(long accountNumber, double accountMaintenance, double saldo = 0, double limit = 0)
@@ -69,7 +51,7 @@ namespace Bank.Clients
             
             Accounts.RemoveAt(index);
         }
-        public override void GetCard(CardType card, long accountNumber, long cardNumber, int pin, int cvv, DateOnly cardExpiry)
+        public override void OpenCard(CardType card, long accountNumber, long cardNumber, int pin, int cvv, DateTime cardExpiry)
         {
             var account = Accounts.Find(a => a.GetAccountNumber() == accountNumber);
             Cards.Add(new Card(account, cardNumber, card, pin, cvv, cardExpiry));
@@ -99,17 +81,49 @@ namespace Bank.Clients
             UserName = "";
             Password = "";
         }
-        public void TakeLoan(double interestRate, int loanTerm, double principal, double insuranceAndFess, string repaymentTerms)
+        public void TakeLoan(int id, double interestRate, int loanTerm, double principal, double insuranceAndFess, string repaymentTerms)
         {
             if (_loan != null)
                 throw new Exception("You have already taken the laon!");
-            _loan = new Loan(interestRate * principal, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms);
+            _loan = new Loan(id,interestRate * principal, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms);
         }
         public void CloseLoan()
         {
             if (_loan == null)
                 throw new Exception("You don't have any loan!");
             _loan = null;
+        }
+        public Loan GetLoan()
+        {
+            return _loan;
+        }
+        public override AbstractAccount GetAccount(long accountNumber)
+        {
+            var index = Accounts.FindIndex(account => account.GetAccountNumber() == accountNumber);
+            try
+            {
+                CheckIndex(index);
+            }
+            catch (ArgumentException e)
+            {
+
+                throw;
+            }
+            return Accounts[index];
+        }
+        public override Card GetCard(long cardNumber)
+        {
+            var index = Cards.FindIndex(card => card.CardNumber == cardNumber);
+            try
+            {
+                CheckIndex(index);
+            }
+            catch (ArgumentException e)
+            {
+
+                throw;
+            }
+            return Cards[index];
         }
     }
 }

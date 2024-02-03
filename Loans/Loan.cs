@@ -10,15 +10,16 @@ namespace Bank.Loans
     {
         private double _loanAmount, _principal, _insuranceAndFees, _paidOff;
         public double InterestRate { get; set; }
-        private int _loanTerm;
+        private int _loanTerm, _id;
         private string _repaymentTerms ;
         public Loan()
         {
             _paidOff = 0;   
         }
-        public Loan(double loanAmount, double interestRate, int loanTerm, double principal, double insuranceAndFees, string repaymentTerms)
+        public Loan(int id, double loanAmount, double interestRate, int loanTerm, double principal, double insuranceAndFees, string repaymentTerms)
             : this()
         {
+            _id = id;
             _loanAmount = loanAmount;
             InterestRate = interestRate;
             _loanTerm = loanTerm;
@@ -53,6 +54,10 @@ namespace Bank.Loans
         public double GetRemainingBalanceOfTheLain()
         {
             return _loanAmount - _paidOff;
+        }
+        public int GetID()
+        {
+            return _id;
         }
     }
 }
