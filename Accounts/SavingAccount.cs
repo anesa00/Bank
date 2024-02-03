@@ -107,7 +107,7 @@ namespace Bank.Accounts
             
             _saldo -= amount;
 
-            _transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, services));
+            _transactions.Add(new Transaction(DateTime.Now, description, amount, accountNumber, services));
             TransactionCounter++;
 
             if (statement)
@@ -131,7 +131,7 @@ namespace Bank.Accounts
 
             _saldo -= amount;
 
-            _transactions.Add(new Transaction(new DateTime(), "You have withdrawn " + amount + "BAM from your account.", amount));
+            _transactions.Add(new Transaction(DateTime.Now, "You have withdrawn " + amount + "BAM from your account.", amount));
             TransactionLimit++;
 
             if (statement)
@@ -151,7 +151,7 @@ namespace Bank.Accounts
             }
 
             _saldo += amount;
-            _transactions.Add(new Transaction(new DateTime(), "You have deposited " + amount + "BAM into your account.", amount));
+            _transactions.Add(new Transaction(DateTime.Now, "You have deposited " + amount + "BAM into your account.", amount));
             TransactionLimit++;
 
             if (statement)

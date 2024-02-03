@@ -23,6 +23,7 @@ namespace Bank.Clients
         {
             _id = id;
             Adress = adressOfCompany;
+            Name = nameOfCompany;
             Client = new Person(name, surname, birthDate, age, JMBG, adress, phoneNumber, email);
         }
         public LegalEntityClient(string id, string adressOfCompany, string nameOfCompany, string name, string surname, DateTime birthDate, int age, 
@@ -138,6 +139,10 @@ namespace Bank.Clients
         public Loan GetLoan()
         {
             return _loan;
+        }
+        public string GetID()
+        {
+            return _id;
         }
     }
 }

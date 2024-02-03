@@ -125,7 +125,7 @@ namespace Bank.Accounts
             else 
                 resoult.Quantity += quantity;
 
-            _transactions.Add(new Transaction(new DateTime(), description, amount, accountNumber, instrument, quantity, services));
+            _transactions.Add(new Transaction(DateTime.Now, description, amount, accountNumber, instrument, quantity, services));
 
             if (statement)
                 TransactionStatement(_transactions.Last().TransactionStatement());
@@ -141,7 +141,7 @@ namespace Bank.Accounts
                 throw;
             }
             _saldo += amount;
-            _transactions.Add(new Transaction(new DateTime(), "You have deposited " + amount + "BAM into your account.", amount));
+            _transactions.Add(new Transaction(DateTime.Now, "You have deposited " + amount + "BAM into your account.", amount));
             
             if (statement)
                 TransactionStatement(_transactions.Last().TransactionStatement());
@@ -162,7 +162,7 @@ namespace Bank.Accounts
                 throw new ArgumentOutOfRangeException("You don't have enought money on your account!");
 
             _saldo -= amount;
-            _transactions.Add(new Transaction(new DateTime(), "You have withdrawn " + amount + "BAM from your account.", amount));
+            _transactions.Add(new Transaction(DateTime.Now, "You have withdrawn " + amount + "BAM from your account.", amount));
 
             if (statement)
                 TransactionStatement(_transactions.Last().TransactionStatement());

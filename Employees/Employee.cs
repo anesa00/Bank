@@ -1,11 +1,8 @@
 ﻿
-using Bank.Clients;
 using Bank.Utility_Classes;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Bank.Employees
 {
-    public enum Position { Director, BankOfficer, Manager, Accountant}
     public class Employee
     {
         public Person Person { get; set; }
