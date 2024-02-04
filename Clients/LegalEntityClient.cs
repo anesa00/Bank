@@ -18,8 +18,14 @@ namespace Bank.Clients
             if (index == -1)
                 throw new ArgumentException("There is no account with this account number!");
         }
+        public LegalEntityClient()
+        {
+            Accounts = new List<AbstractAccount>();
+            Cards = new List<Card>();
+        }
         private LegalEntityClient(string id, string adressOfCompany, string nameOfCompany, string name, string surname, DateTime birthDate, int age, 
             string JMBG, string adress, string phoneNumber, string email = "")
+            : this()
         {
             _id = id;
             Adress = adressOfCompany;

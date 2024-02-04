@@ -112,7 +112,11 @@ namespace Bank
                 throw new ArgumentException("There is no employee with this JMBG!");
             _employees.RemoveAt(index);
         }
-        public List<Employee> GetEmployees()
+        public Employee GetEmployee(string JMBG)
+        {
+            return _employees.Find(employee => employee.Person.GetJMBG() == JMBG);
+        }
+        public List<Employee> GetAllEmployees()
         {
             return _employees;
         }
