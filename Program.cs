@@ -148,7 +148,8 @@ internal class Program
 				Console.WriteLine("16. See all clients");
 				Console.WriteLine("17. See all employees");
 					Console.WriteLine("18. See all loans");
-				Console.WriteLine("0. Exit");
+                    Console.WriteLine("19. Make a transaction (investor client)");
+                    Console.WriteLine("0. Exit");
 				response = Byte.Parse(Console.ReadLine());
 				switch (response)
 				{
@@ -242,6 +243,9 @@ internal class Program
 						case 18:
 							PrintLoans(bank.GetAllLoans());
 							break;
+						case 19:
+							InvestorMakeTransaction(bank);
+							break;
 					default:
 						Console.WriteLine("You haven't chosen any option.");
 						break;
@@ -301,7 +305,7 @@ internal class Program
 				else if (item is BrokerageAccount brokerage)
 				{
 					Console.WriteLine("Total portfolio value: " + brokerage.GeTotalPortofolioValue() + "\nInstruments");
-					brokerage.SeePortfolio();
+					Console.WriteLine(brokerage.SeePortfolio());
 				}
                 Console.WriteLine("Transactions: ");
 				item.BankStatment();
@@ -751,6 +755,49 @@ internal class Program
 			if (response == "y")
 				bank.MakeATranscation(fromAccountNumber, toAccountNumber, amount, services, description);
 			else bank.MakeATranscation(toAccountNumber, amount, services, description);
+        }
+		static void InvestorMakeTransaction(Bank bank)
+		{
+			long fromAccountNumber, toAccountNumber;
+			string description, type, instrument;
+			double amount, services;
+			int quantity;
+            Console.WriteLine("Please enter the account from which you want to deposit money: ");
+            fromAccountNumber = Convert.ToInt64(Console.ReadLine());
+            Console.WriteLine("Please enter the account to which you want to deposit money: ");
+            toAccountNumber = Convert.ToInt64(Console.ReadLine());
+            do
+            {
+                Console.WriteLine("Please enter the type of a instrument: ");
+				type = Console.ReadLine();
+                Console.WriteLine("Please enter  a instrument: ");
+                instrument = Console.ReadLine();
+                Console.WriteLine("Please enter the amount: ");
+                amount = Convert.ToDouble(Console.ReadLine());
+                if (amount <= 0)
+                {
+                    Console.WriteLine("Incorect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter the quantity: ");
+                quantity = Convert.ToInt32(Console.ReadLine());
+                if (quantity <= 0)
+                {
+                    Console.WriteLine("Incorect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter the services:");
+                services = Convert.ToDouble(Console.ReadLine());
+                if (services < 0)
+                {
+                    Console.WriteLine("Incorect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter the description: ");
+                description = Console.ReadLine();
+                break;
+            } while (true);
+			bank.BuyInstrument(fromAccountNumber, toAccountNumber, description, amount, type, instrument, quantity, services);
         }
     }
 }
