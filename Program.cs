@@ -8,6 +8,7 @@ using System.Numerics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace Bank
 {
@@ -97,7 +98,7 @@ namespace Bank
 				new List<Instrument> { new Instrument { Name = "AERT", Price = 78523, Quantity = 1, Type = "Stocks" } }, "dokly.pecklone14@gmail.com");
 			bank.AddLegalEntityClientWithBusinessAccount("785kij", "Adress 785", "Company", "Dockles", "Micklonert", new DateTime(1990, 10, 10), 2024 - 1990,
 				"1010990562314", "Adress 73", 96.74, "033/000-850", "", 369240, "BAM", 0, 15, 5000);
-			bank.AddLegalEntityClientWIthSavingAccount("ER874", "Adress 36", "Stick", "Solkon", "Ertany", new DateTime(1987, 2, 28), 2024 - 1987,
+			bank.AddLegalEntityClientWithSavingAccount("ER874", "Adress 36", "Stick", "Solkon", "Ertany", new DateTime(1987, 2, 28), 2024 - 1987,
 				"2802987362375", "Adress 63", 17, "033/639-000", "ertany@gmail.com", 7452, 1000, 31, 32);
 		}
 		static void PrintInformationAboutBank(Bank bank)
@@ -165,6 +166,9 @@ namespace Bank
 							IsNotBankOfficer(employee);
 							EnterJMBG("Please enter the JMBG of the employee you want to check: ", out JMBG);
 							PrintInformationAboutEmployee(bank.GetEmployee(JMBG));
+							break;
+						case 4:
+							AddingNewClient(bank);
 							break;
 						case 15:
 							IsNotBankOfficer(employee);
@@ -260,7 +264,9 @@ namespace Bank
 				adress = Console.ReadLine();
 				Console.WriteLine("Please enter the email of the new employee: ");
 				email = Console.ReadLine();
-				if (new EmailAddressAttribute().IsValid(email) == false)
+                if (email == "")
+                    continue;
+                else if (new EmailAddressAttribute().IsValid(email) == false)
 				{
 					Console.WriteLine("Incorrect input!");
 					continue;
@@ -290,6 +296,184 @@ namespace Bank
 				}
 				isCorrect = true;
 			} while (!isCorrect);
+		}
+		static void EnterClientData(out string name, out string surname, out DateTime birthDate, out string JMBG, out string adress, out string email,
+			out string phoneNumber, out double accountMaintenance)
+		{
+			JMBG = "";
+			name = "";
+			surname = "";
+			adress = "";
+			email = "";
+			phoneNumber = "";
+			birthDate = DateTime.MinValue;
+			accountMaintenance = 0;
+			do
+			{
+				Console.WriteLine("Please enter the JMBG of the new client: ");
+				JMBG = Console.ReadLine();
+				if (JMBG.Length != 13 || !IsDigitsOnly(JMBG))
+				{
+					Console.WriteLine("Incorrect input!");
+					continue;
+				}
+				Console.WriteLine("Please enter the name of the new client: ");
+				name = Console.ReadLine();
+				Console.WriteLine("Please enter the surname of the new client: ");
+				surname = Console.ReadLine();
+				Console.WriteLine("Please enter the adress of the new client: ");
+				adress = Console.ReadLine();
+				Console.WriteLine("Please enter the email of the new client: ");
+				email = Console.ReadLine();
+				if (email == "")
+					continue;
+				else if (new EmailAddressAttribute().IsValid(email) == false)
+				{
+					Console.WriteLine("Incorrect input!");
+					continue;
+				}
+				Console.WriteLine("Please enter the phone number of the new client: ");
+				phoneNumber = Console.ReadLine();
+				Console.WriteLine("Please enter the birth date (year, month, day) of the new client: ");
+				if (!DateTime.TryParse(Console.ReadLine(), out birthDate))
+				{
+					Console.WriteLine("Incorrect input!");
+					continue;
+				}
+				Console.WriteLine("Please enter the account maintenance of the new client: ");
+				accountMaintenance = Convert.ToDouble(Console.ReadLine());
+				break;
+			} while (true);
+
+		}
+		static void AddingNewClient(Bank bank)
+		{
+			Console.WriteLine("Choose one of the options: ");
+			Console.WriteLine("1. Indvidual client with current account");
+			Console.WriteLine("2. Indvidual client with saving account");
+			Console.WriteLine("3. Legal entity client with saving account");
+			Console.WriteLine("4. Legal entity client with business account");
+			Console.WriteLine("5. Investor client");
+			var response = Convert.ToInt16(Console.ReadLine());
+			switch (response)
+			{
+				case 1:
+					string name, surname, JMBG, adress, phoneNumber, email;
+					DateTime birthDate;
+					double accountMaintenance, saldo, limit;
+					EnterClientData(out name, out surname, out birthDate, out JMBG, out adress, out email, out phoneNumber, out accountMaintenance);
+					Console.WriteLine("Please enter a saldo: ");
+					saldo = Convert.ToDouble(Console.ReadLine());
+					Console.WriteLine("Please enter a limit: ");
+					limit = Convert.ToDouble(Console.ReadLine());
+					bank.AddIndvidualClientWithCurrentAccount(name, surname, birthDate, 2024 - birthDate.Year, JMBG, adress, phoneNumber, accountMaintenance,
+						email, saldo, limit);
+					break;
+				case 2:
+					double minSaldo, bankInterest;
+					int transactionLimit;
+					EnterClientData(out name, out surname, out birthDate, out JMBG, out adress, out email, out phoneNumber, out accountMaintenance);
+					Console.WriteLine("Please enter a saldo: ");
+					saldo = Convert.ToDouble(Console.ReadLine());
+					Console.WriteLine("Please enter a minimum saldo: ");
+					minSaldo = Convert.ToDouble(Console.ReadLine());
+					Console.WriteLine("Please enter a bank interest: ");
+					bankInterest = Convert.ToDouble(Console.ReadLine());
+					Console.WriteLine("Please enter a transaction limit: ");
+					transactionLimit = Convert.ToInt32(Console.ReadLine());
+					bank.AddIndvidualClientWithSavingAccount(name, surname, birthDate, 2024 - birthDate.Year, JMBG, adress, phoneNumber, accountMaintenance,
+						email, saldo, minSaldo, bankInterest, transactionLimit);
+					break;
+				case 3:
+					string id, nameOfCompany, adressOfCompany;
+					Console.WriteLine("Please enter a id of the company: ");
+					id = Console.ReadLine(); 
+					Console.WriteLine("Please enter a name of the company: ");
+					nameOfCompany = Console.ReadLine();
+					Console.WriteLine("Please enter a adress of the company: ");
+					adressOfCompany = Console.ReadLine();
+					EnterClientData(out name, out surname, out birthDate, out JMBG, out adress, out email, out phoneNumber, out accountMaintenance);
+					Console.WriteLine("Please enter a saldo: ");
+					saldo = Convert.ToDouble(Console.ReadLine());
+					Console.WriteLine("Please enter a minimum saldo: ");
+					minSaldo = Convert.ToDouble(Console.ReadLine());
+					Console.WriteLine("Please enter a bank interest: ");
+					bankInterest = Convert.ToDouble(Console.ReadLine());
+					Console.WriteLine("Please enter a transaction limit: ");
+					transactionLimit = Convert.ToInt32(Console.ReadLine());
+					bank.AddLegalEntityClientWithSavingAccount(id, adressOfCompany, nameOfCompany, name, surname, birthDate, 2024 - birthDate.Year, JMBG, 
+						adress, accountMaintenance, phoneNumber, email, saldo, minSaldo, bankInterest, transactionLimit);
+					break;
+				case 4:
+					string accountCurrency;
+					int dailyTransactionLimit, monthlyTransactionLimit;
+					Console.WriteLine("Please enter a id of the company: ");
+					id = Console.ReadLine();
+					Console.WriteLine("Please enter a name of the company: ");
+					nameOfCompany = Console.ReadLine();
+					Console.WriteLine("Please enter a adress of the company: ");
+					adressOfCompany = Console.ReadLine();
+					EnterClientData(out name, out surname, out birthDate, out JMBG, out adress, out email, out phoneNumber, out accountMaintenance);
+					Console.WriteLine("Please enter a saldo: ");
+					saldo = Convert.ToDouble(Console.ReadLine());
+					Console.WriteLine("Please enter a account currency: ");
+					accountCurrency = Console.ReadLine();
+                    Console.WriteLine("Please enter a daily transaction limit: ");
+					dailyTransactionLimit = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Please enter a monthly transaction limit: ");
+                    monthlyTransactionLimit = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Please enter a limit: ");
+                    limit = Convert.ToDouble(Console.ReadLine());
+					bank.AddLegalEntityClientWithBusinessAccount(id, adressOfCompany, nameOfCompany, name, surname, birthDate, 2024 - birthDate.Year, JMBG,
+						adress, accountMaintenance, phoneNumber, email, saldo, accountCurrency, dailyTransactionLimit, monthlyTransactionLimit, limit);
+					break;
+				case 5:
+                    Console.WriteLine("Do you want enter the intruments? (Y/N)");
+					var input = Console.ReadLine();
+                    EnterClientData(out name, out surname, out birthDate, out JMBG, out adress, out email, out phoneNumber, out accountMaintenance);
+                    Console.WriteLine("Please enter a saldo: ");
+                    saldo = Convert.ToDouble(Console.ReadLine());
+                    if (input.ToLower() == "n")
+						bank.AddInvestorClient(name, surname, birthDate, 2024 - birthDate.Year, JMBG, adress, phoneNumber, accountMaintenance, email, saldo);
+					else if (input.ToLower() == "y")
+						bank.AddInvestorClient(name, surname, birthDate, 2024 - birthDate.Year, JMBG, adress, phoneNumber, accountMaintenance, saldo, 
+							 EnterInstruments(), email);
+                    break;
+                default:
+					Console.WriteLine("You haven't chosen any option.");
+					break;
+
+			}
+		}
+		static List<Instrument> EnterInstruments()
+		{
+			int count = 0;
+			do {
+				Console.WriteLine("How many instruments do you want?");
+				count = Convert.ToInt32(Console.ReadLine());
+			} while (count <= 0);
+
+			var list = new List<Instrument>(count);
+			for (int i = 0; i < count; i++)
+			{
+                Console.WriteLine("Enter a type: ");
+				var type = Console.ReadLine();
+                Console.WriteLine("Enter a name: ");
+                var name = Console.ReadLine();
+                Console.WriteLine("Enter a price: ");
+				var price = Convert.ToDouble(Console.ReadLine());
+                Console.WriteLine("Enter a quantity: ");
+				var quantity = Convert.ToInt32(Console.ReadLine());
+				if (price <= 0 || quantity <= 0)
+				{
+                    Console.WriteLine("Incorect input!");
+					i--;
+					continue;
+                }
+				list.Add(new Instrument { Type = type, Name = name, Price = price, Quantity = quantity });
+            }
+
+			return list;
 		}
 	}
 }

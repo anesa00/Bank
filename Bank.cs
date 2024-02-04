@@ -149,7 +149,7 @@ namespace Bank
             _clients.Add(new InvestorClient(name, surname, birthDate, age, JMBG, adress, phoneNumber, GenerateAccountNumber(), accountMaintenance, saldo, 
                 portfolio, email));
         }
-        public void AddLegalEntityClientWIthSavingAccount(string id, string adressOfCompany, string nameOfCompany, string name, string surname, 
+        public void AddLegalEntityClientWithSavingAccount(string id, string adressOfCompany, string nameOfCompany, string name, string surname, 
             DateTime birthDate, int age,  string JMBG, string adress,double accountMaintenance, string phoneNumber, string email = "", 
             double saldo = 0, double minSaldo = 0, double bankInterest = 0, int transactionLimit = 0)
         {
@@ -158,7 +158,7 @@ namespace Bank
         }
         public void AddLegalEntityClientWithBusinessAccount(string id, string adressOfCompany, string nameOfCompany, string name, string surname, 
             DateTime birthDate, int age, string JMBG, string adress, double accountMaintenance, string phoneNumber, string email = "", 
-            double saldo = 0, string accountCurrency = "BAM", int dailyTransactionLimit = 0, int monthlyTransactionLimit = 0, int limit = 0)
+            double saldo = 0, string accountCurrency = "BAM", int dailyTransactionLimit = 0, int monthlyTransactionLimit = 0, double limit = 0)
         {
             _clients.Add(new LegalEntityClient(id, adressOfCompany, nameOfCompany, name, surname, birthDate, age, JMBG, adress, accountMaintenance,
                  GenerateAccountNumber(), phoneNumber, email, saldo, accountCurrency, dailyTransactionLimit, monthlyTransactionLimit, limit));

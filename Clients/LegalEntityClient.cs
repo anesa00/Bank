@@ -41,7 +41,7 @@ namespace Bank.Clients
         }
         public LegalEntityClient(string id, string adressOfCompany, string nameOfCompany, string name, string surname, DateTime birthDate, int age, 
             string JMBG, string adress, double accountMaintenance, long accountNumber, string phoneNumber, string email = "", double saldo = 0, 
-            string accountCurrency = "BAM", int dailyTransactionLimit = 0, int monthlyTransactionLimit = 0, int limit = 0)
+            string accountCurrency = "BAM", int dailyTransactionLimit = 0, int monthlyTransactionLimit = 0, double limit = 0)
             : this(id, adressOfCompany,nameOfCompany, name, surname, birthDate, age, JMBG, adress, phoneNumber, email)
         {
             OpenBusinessAccount(accountNumber, accountMaintenance, saldo, accountCurrency, dailyTransactionLimit, monthlyTransactionLimit, limit);
@@ -53,7 +53,7 @@ namespace Bank.Clients
         }
 
         public void OpenBusinessAccount(long accountNumber, double accountMaintenance, double saldo = 0, string accountCurrency = "BAM", 
-            int dailyTransactionLimit = 0, int monthlyTransactionLimit = 0, int limit = 0)
+            int dailyTransactionLimit = 0, int monthlyTransactionLimit = 0, double limit = 0)
         {
             Accounts.Add(new BusinessAccount(accountNumber, accountMaintenance, saldo, accountCurrency, dailyTransactionLimit, monthlyTransactionLimit, limit));
         }
