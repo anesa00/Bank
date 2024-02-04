@@ -189,6 +189,21 @@ internal class Program
 							EnterCardData(out cardType, out JMBGClient, out accountNumber);
 							bank.OpenCard(cardType, JMBGClient, accountNumber);
 							break;
+						case 8:
+							long cardNumber;
+                            EnterJMBG("Please enter the JMBG of the client you want to check: ", out JMBGClient);
+                            Console.WriteLine("Please enter th card number: ");
+                            cardNumber = Convert.ToInt64(Console.ReadLine());
+                            bank.CloseCard(cardNumber, JMBGClient);
+                            break;
+						case 9:
+                            Console.WriteLine("Please enter th card number: ");
+							cardNumber = Convert.ToInt64(Console.ReadLine());
+							PrintCards(new List<Card> { bank.GetACard(cardNumber)});
+							break;
+						case 13:
+							PrintCards(bank.GetAllCards());
+							break;
 						case 14:
 							PrintAllClients(Bank.GetClients());
 							break;
@@ -327,6 +342,19 @@ internal class Program
 
 			return true;
 		}
+		static void ChooseACard(out long cardNumber, out string JMBG)
+		{
+			cardNumber = 0;
+			JMBG = "";
+			var temp = JMBG;
+            foreach (var item in Bank.GetClients().Find(client => client.Client.GetJMBG() == temp).Cards)
+            {
+                Console.WriteLine("Do you want this card to close {0} card {1}? (Y/N)", item.GetType(), item.CardNumber);
+                var response = Console.ReadLine();
+                if (response.ToLower() == "y")
+                    cardNumber = item.CardNumber;
+            }
+        }
 		static void EnterCardData(out CardType cardType, out string JMBG, out long accountNumber)
 		{
 			do
