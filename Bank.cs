@@ -274,7 +274,7 @@ namespace Bank
                 CheckIsClientNull(client);
                 var transcation = new Transaction(DateTime.Now, description, amount, accountNumber, services);
                 _transcations.Add(transcation);
-                transcation.TransactionStatement();
+                Console.WriteLine(transcation.TransactionStatement());
                 _saldo += services;
                 client.GetAccount(accountNumber).ReceiveTransaction(transcation);
             }

@@ -13,6 +13,7 @@ using Bank.Clients;
 using Bank.Cards;
 using System.Runtime.CompilerServices;
 using Bank.Loans;
+using Bank.Transactions;
 
 namespace Bank
 {
@@ -222,6 +223,12 @@ internal class Program
 							id = Convert.ToInt32(Console.ReadLine());
                             PrintLoan(bank.GetLoan(id));
 							break;
+						case 13:
+							MakingTransaction(bank);
+							break;
+						case 14:
+							PrintAllTransactions(bank.GetAllTranscations());
+							break;
 						case 15:
 							PrintCards(bank.GetAllCards());
 							break;
@@ -361,6 +368,14 @@ internal class Program
             foreach (var item in clients)
             {
 				PrintInformationAboutClient(item);
+                Console.WriteLine();
+            }
+        }
+		static void PrintAllTransactions(List<Transaction> transactions)
+		{
+            foreach (var item in transactions)
+            {
+				Console.WriteLine(item.TransactionStatement());
                 Console.WriteLine();
             }
         }
@@ -699,5 +714,43 @@ internal class Program
 
 			return list;
 		}
-	}
+		static void MakingTransaction(Bank bank)
+		{
+			long fromAccountNumber = 0, toAccountNumber;
+			double amount, services;
+			string description;
+            Console.WriteLine("Do you want to deposit from one client account to another? (Y/N)");
+			var response = Console.ReadLine();
+			if (response.ToLower() == "y")
+			{
+				Console.WriteLine("Please enter the account from which you want to deposit money: ");
+				fromAccountNumber = Convert.ToInt64(Console.ReadLine());
+			}
+            do
+			{
+				Console.WriteLine("Please enter the account to which you want to deposit money: ");
+				toAccountNumber = Convert.ToInt64(Console.ReadLine());
+				Console.WriteLine("Please enter the amount: ");
+				amount = Convert.ToDouble(Console.ReadLine());
+                if(amount <= 0)
+				{
+                    Console.WriteLine("Incorect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter the services:");
+				services = Convert.ToDouble(Console.ReadLine());
+                if (services < 0)
+                {
+                    Console.WriteLine("Incorect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter the description: ");
+				description = Console.ReadLine();
+				break;
+			} while (true);
+			if (response == "y")
+				bank.MakeATranscation(fromAccountNumber, toAccountNumber, amount, services, description);
+			else bank.MakeATranscation(toAccountNumber, amount, services, description);
+        }
+    }
 }
