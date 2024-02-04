@@ -15,14 +15,21 @@ namespace Bank.Clients
             if (index == -1)
                 throw new ArgumentException("There is no account with this account number!");
         }
+        public IndvidualClient()
+        {
+            Accounts = new List<AbstractAccount>();
+            Cards = new List <Card>();
+        }
         public IndvidualClient(string name, string surname, DateTime birthDate, int age, string JMBG, string adress, string phoneNumber, long accountNumber,
             double accountMaintenance, string email = "", double saldo = 0, double limit = 0)
+            : this()
         {
             Client = new Person(name, surname, birthDate, age, JMBG, adress, phoneNumber, email);
             OpenCurrentAccount(accountNumber, accountMaintenance, saldo, limit);
         }
         public IndvidualClient(string name, string surname, DateTime birthDate, int age, string JMBG, string adress, string phoneNumber, long accountNumber, 
             double accountMaintenance, string email = "", double saldo = 0, double minSaldo = 0, double bankInterest = 0, int transactionLimit = 0) 
+            : this()
         {
             Client = new Person(name, surname, birthDate, age, JMBG, adress, phoneNumber, email);
             OpenSavingAccount(accountNumber, accountMaintenance, saldo, minSaldo, bankInterest, transactionLimit);

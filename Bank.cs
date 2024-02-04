@@ -76,10 +76,15 @@ namespace Bank
         public Bank()
         {
             _employees = new List<Employee>();
+            _transcations = new List<Transaction>();
             if(_clients == null)
                 _clients = new List<AbstractClient>();
             if (_ATM == null)
                 _ATM = new List<AutomatedTellerMachine>();
+            if (_cards == null)
+                _cards = new List<Card>();
+            if (_loans == null)
+                _loans = new List<Loan>();
         }
         public Bank(string swiftCode, string adress, string name, double saldo, string phoneNumber, string nameOfOwner, string surnameOfOwner, DateTime birthDateOfOwner, 
             int ageOfOwner, string JMBGOfOwner, string adressOfOwner, string phoneNumberOfOwner, string emailOfOwner = "")
@@ -89,6 +94,7 @@ namespace Bank
             Adress = adress;
             Name = name;
             PhoneNumber = phoneNumber;
+            _saldo = saldo;
             Owner = new Person(nameOfOwner, surnameOfOwner, birthDateOfOwner, ageOfOwner, JMBGOfOwner, adressOfOwner, phoneNumberOfOwner, emailOfOwner);
         }
         public Bank(string swiftCode, string adress, string name, double saldo, string phoneNumber, List<AutomatedTellerMachine> ATM, string nameOfOwner, 
@@ -100,7 +106,7 @@ namespace Bank
             _ATM = ATM;
         }
         public void AddEmployee(string JMBG, DateTime birthDate, string name, string surname, int age, string adress, string email, string phonoNumber,
-            DateOnly hireDate, double salary, Position position, string contract)
+            DateTime hireDate, double salary, Position position, string contract)
         {
             _employees.Add(new Employee(JMBG, birthDate, name, surname, age, adress, email, phonoNumber, hireDate, salary, position, contract));
         }
@@ -111,7 +117,11 @@ namespace Bank
                 throw new ArgumentException("There is no employee with this JMBG!");
             _employees.RemoveAt(index);
         }
-        public List<Employee> GetEmployees()
+        public Employee GetEmployee(string JMBG)
+        {
+            return _employees.Find(employee => employee.Person.GetJMBG() == JMBG);
+        }
+        public List<Employee> GetAllEmployees()
         {
             return _employees;
         }
@@ -144,7 +154,7 @@ namespace Bank
             _clients.Add(new InvestorClient(name, surname, birthDate, age, JMBG, adress, phoneNumber, GenerateAccountNumber(), accountMaintenance, saldo, 
                 portfolio, email));
         }
-        public void AddLegalEntityClientWIthSavingAccount(string id, string adressOfCompany, string nameOfCompany, string name, string surname, 
+        public void AddLegalEntityClientWithSavingAccount(string id, string adressOfCompany, string nameOfCompany, string name, string surname, 
             DateTime birthDate, int age,  string JMBG, string adress,double accountMaintenance, string phoneNumber, string email = "", 
             double saldo = 0, double minSaldo = 0, double bankInterest = 0, int transactionLimit = 0)
         {
@@ -153,7 +163,7 @@ namespace Bank
         }
         public void AddLegalEntityClientWithBusinessAccount(string id, string adressOfCompany, string nameOfCompany, string name, string surname, 
             DateTime birthDate, int age, string JMBG, string adress, double accountMaintenance, string phoneNumber, string email = "", 
-            double saldo = 0, string accountCurrency = "BAM", int dailyTransactionLimit = 0, int monthlyTransactionLimit = 0, int limit = 0)
+            double saldo = 0, string accountCurrency = "BAM", int dailyTransactionLimit = 0, int monthlyTransactionLimit = 0, double limit = 0)
         {
             _clients.Add(new LegalEntityClient(id, adressOfCompany, nameOfCompany, name, surname, birthDate, age, JMBG, adress, accountMaintenance,
                  GenerateAccountNumber(), phoneNumber, email, saldo, accountCurrency, dailyTransactionLimit, monthlyTransactionLimit, limit));
@@ -182,7 +192,7 @@ namespace Bank
             {
                 var client = GetClient(JMBG);
                 long number= GenerateCardNumber();
-                client.OpenCard(card, accountNumber, number, GenerateNumber(1000, 10000), GenerateNumber(100, 1000), DateTime.Now.AddYears(3));
+                client.OpenCard(card, accountNumber, number, GenerateNumber(1000, 10000), GenerateNumber(100, 100), DateTime.Now.AddYears(3));
                 _cards.Add(client.GetCard(number));
             }
             catch (ArgumentException)
@@ -205,7 +215,7 @@ namespace Bank
                 throw;
             }
         }
-        public void TakeLoan(string JMBG, double interestRate, int loanTerm, double principal, double insuranceAndFess, string repaymentTerms)
+        public void TakeLoan(string JMBG, double interestRate, int loanTerm, double principal, double insuranceAndFees, string repaymentTerms)
         {
             try
             {
@@ -213,9 +223,9 @@ namespace Bank
                 if (client is IClient c)
                 {
                     int id = GenerateNumber(100, 10000);
-                    c.TakeLoan(id, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms);
-                    _saldo += insuranceAndFess + interestRate;
-                    _loans.Add(new Loan(id, interestRate * principal, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms));
+                    c.TakeLoan(id, interestRate, loanTerm, principal, insuranceAndFees, repaymentTerms);
+                    _saldo += insuranceAndFees + interestRate;
+                    _loans.Add(new Loan(id, interestRate * principal, interestRate, loanTerm, principal, insuranceAndFees, repaymentTerms));
                 }    
             }
             catch (Exception)
@@ -264,7 +274,7 @@ namespace Bank
                 CheckIsClientNull(client);
                 var transcation = new Transaction(DateTime.Now, description, amount, accountNumber, services);
                 _transcations.Add(transcation);
-                transcation.TransactionStatement();
+                Console.WriteLine(transcation.TransactionStatement());
                 _saldo += services;
                 client.GetAccount(accountNumber).ReceiveTransaction(transcation);
             }

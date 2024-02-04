@@ -38,7 +38,7 @@ namespace Bank.Accounts
             MonthlyTransactionCounter= 0;
         }
         public BusinessAccount(long accountNumber, double accountMaintenance, double saldo = 0, string accountCurrency = "BAM", int dailyTransactionLimit = 0, 
-            int monthlyTransactionLimit = 0, int limit = 0)
+            int monthlyTransactionLimit = 0, double limit = 0)
             : this()
         {
             _accountNumber = accountNumber;
