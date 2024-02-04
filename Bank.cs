@@ -215,7 +215,7 @@ namespace Bank
                 throw;
             }
         }
-        public void TakeLoan(string JMBG, double interestRate, int loanTerm, double principal, double insuranceAndFess, string repaymentTerms)
+        public void TakeLoan(string JMBG, double interestRate, int loanTerm, double principal, double insuranceAndFees, string repaymentTerms)
         {
             try
             {
@@ -223,9 +223,9 @@ namespace Bank
                 if (client is IClient c)
                 {
                     int id = GenerateNumber(100, 10000);
-                    c.TakeLoan(id, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms);
-                    _saldo += insuranceAndFess + interestRate;
-                    _loans.Add(new Loan(id, interestRate * principal, interestRate, loanTerm, principal, insuranceAndFess, repaymentTerms));
+                    c.TakeLoan(id, interestRate, loanTerm, principal, insuranceAndFees, repaymentTerms);
+                    _saldo += insuranceAndFees + interestRate;
+                    _loans.Add(new Loan(id, interestRate * principal, interestRate, loanTerm, principal, insuranceAndFees, repaymentTerms));
                 }    
             }
             catch (Exception)

@@ -140,10 +140,13 @@ internal class Program
 				Console.WriteLine("9. Get information about a card");
 				Console.WriteLine("10. Provide a loan");
 				Console.WriteLine("11. Close a loan");
-				Console.WriteLine("12. See all transactions");
-				Console.WriteLine("13. See all cards");
-				Console.WriteLine("14. See all clients");
-				Console.WriteLine("15. See all employees");
+					Console.WriteLine("12. Get information about a loan");
+					Console.WriteLine("13. Make a transaction");
+				Console.WriteLine("14. See all transactions");
+				Console.WriteLine("15. See all cards");
+				Console.WriteLine("16. See all clients");
+				Console.WriteLine("17. See all employees");
+					Console.WriteLine("18. See all loans");
 				Console.WriteLine("0. Exit");
 				response = Byte.Parse(Console.ReadLine());
 				switch (response)
@@ -201,16 +204,37 @@ internal class Program
 							cardNumber = Convert.ToInt64(Console.ReadLine());
 							PrintCards(new List<Card> { bank.GetACard(cardNumber)});
 							break;
-						case 13:
+						case 10:
+							double interestRate, principal, insuranceAndFees;
+							string repaymentTerms;
+							int loanTerm;
+                            EnterJMBG("Please enter the JMBG of the client: ", out JMBGClient);
+                            EnterLoanData(out interestRate, out loanTerm, out principal, out insuranceAndFees, out repaymentTerms);
+                            bank.TakeLoan(JMBGClient, interestRate, loanTerm, principal, insuranceAndFees, repaymentTerms);
+							break;
+						case 11:
+                            EnterJMBG("Please enter the JMBG of the client: ", out JMBGClient);
+							bank.CloseLoan(JMBGClient);
+                            break;
+						case 12:
+							int id;
+                            Console.WriteLine("Please enter id of the loan: ");
+							id = Convert.ToInt32(Console.ReadLine());
+                            PrintLoan(bank.GetLoan(id));
+							break;
+						case 15:
 							PrintCards(bank.GetAllCards());
 							break;
-						case 14:
+						case 16:
 							PrintAllClients(Bank.GetClients());
 							break;
-					case 15:
+					case 17:
 						IsNotBankOfficer(employee);
 						PrintAllEmployee(bank.GetAllEmployees());
 						break;
+						case 18:
+							PrintLoans(bank.GetAllLoans());
+							break;
 					default:
 						Console.WriteLine("You haven't chosen any option.");
 						break;
@@ -289,10 +313,18 @@ internal class Program
 		static void PrintLoan(Loan loan)
 		{
 			if(loan != null)
-				Console.WriteLine(loan.GetID + "\nLoan amount: " + loan.GetLoanAmount() + "\nInterest rate: " + loan.InterestRate + "\nPrincipal: " +
+				Console.WriteLine(loan.GetID() + "\nLoan amount: " + loan.GetLoanAmount() + "\nInterest rate: " + loan.InterestRate + "\nPrincipal: " +
 					loan.GetPrincipal() + "\nLoan term: " + loan.GetLoanTerm() + "\nInsurance and Fees: " + loan.GetInsuranceAndFees() + "\nRepayment terms: " +
 					loan.GetRepaymentTerms() + "\nPaid off: " + loan.GetRemainingBalanceOfTheLain());
 		}
+		static void PrintLoans(List<Loan> loans)
+		{
+            foreach (var item in loans)
+            {
+				PrintLoan(item);
+                Console.WriteLine();
+            }
+        }
 		static void PrintInformationAboutClient(AbstractClient client)
 		{
 			if (client is IndvidualClient ic)
@@ -342,19 +374,53 @@ internal class Program
 
 			return true;
 		}
-		static void ChooseACard(out long cardNumber, out string JMBG)
+		static void EnterLoanData(out double interestRate, out int loanTerm, out double principal, out double insuranceAndFees, out string repaymentTerms)
 		{
-			cardNumber = 0;
-			JMBG = "";
-			var temp = JMBG;
-            foreach (var item in Bank.GetClients().Find(client => client.Client.GetJMBG() == temp).Cards)
-            {
-                Console.WriteLine("Do you want this card to close {0} card {1}? (Y/N)", item.GetType(), item.CardNumber);
-                var response = Console.ReadLine();
-                if (response.ToLower() == "y")
-                    cardNumber = item.CardNumber;
-            }
-        }
+			interestRate = 0;
+			loanTerm = 0;
+			principal = 0;
+			insuranceAndFees = 0;
+			repaymentTerms = "";
+			do
+			{
+                Console.WriteLine("Please enter a interest rate:");
+				interestRate = Convert.ToInt32(Console.ReadLine());
+				if (interestRate < 0)
+				{
+                    Console.WriteLine("Incorrect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter a loan term in months:");
+                loanTerm = Convert.ToInt32(Console.ReadLine());
+                if (loanTerm <= 0)
+                {
+                    Console.WriteLine("Incorrect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter a principal:");
+                principal = Convert.ToInt32(Console.ReadLine());
+                if (principal <= 0)
+                {
+                    Console.WriteLine("Incorrect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter an insurance and fees:");
+                insuranceAndFees = Convert.ToInt32(Console.ReadLine());
+                if (insuranceAndFees <= 0)
+                {
+                    Console.WriteLine("Incorrect input!");
+                    continue;
+                }
+                Console.WriteLine("Please enter repayment terms:");
+                repaymentTerms = Console.ReadLine();
+                if (repaymentTerms == "")
+                {
+                    Console.WriteLine("Incorrect input!");
+                    continue;
+                }
+				break;
+            } while (true);
+		}
 		static void EnterCardData(out CardType cardType, out string JMBG, out long accountNumber)
 		{
 			do
