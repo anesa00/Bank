@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Bank.Utility_Classes
 {
-    public enum CardType { Debit, Credit, Prepaid, Charged, Busines }
+    public enum CardType { Debit, Credit, Prepaid, Charged, Business }
 }

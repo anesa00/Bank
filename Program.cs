@@ -183,6 +183,12 @@ internal class Program
 						EnterJMBG("Please enter the JMBG of the client you want to check: ", out JMBGClient);
 						PrintInformationAboutClient(bank.GetClient(JMBGClient));
 						break;
+						case 7:
+							CardType cardType;
+							long accountNumber;
+							EnterCardData(out cardType, out JMBGClient, out accountNumber);
+							bank.OpenCard(cardType, JMBGClient, accountNumber);
+							break;
 						case 14:
 							PrintAllClients(Bank.GetClients());
 							break;
@@ -321,6 +327,36 @@ internal class Program
 
 			return true;
 		}
+		static void EnterCardData(out CardType cardType, out string JMBG, out long accountNumber)
+		{
+			do
+			{
+				cardType = CardType.Debit;
+				JMBG = "";
+				accountNumber = 0;
+				Console.WriteLine("Please enter the type of card you desire (Debit, Credit, Prepaid, Charged, Business): ");
+				if (!Enum.TryParse(Console.ReadLine(), true, out cardType))
+				{
+					Console.WriteLine("Incorrect input!");
+					continue;
+				}
+				EnterJMBG("Please enter the JMBG of the client: ", out JMBG);
+				var temp = JMBG;
+				foreach (var item in Bank.GetClients().Find(client => client.Client.GetJMBG() == temp).Accounts)
+				{
+                    Console.WriteLine("Do you want a card for this account {0}? (Y/N)", item.GetAccountNumber());
+					var response = Console.ReadLine();
+					if (response.ToLower() == "y")
+						accountNumber = item.GetAccountNumber();
+                }
+				if(accountNumber == 0)
+				{
+                    Console.WriteLine("Incorrect input!");
+                    continue;
+                }
+				break;
+			} while (true); 
+        }
 		static void EnterJMBG(string inputText, out string JMBG)
 		{
 			Console.WriteLine(inputText);

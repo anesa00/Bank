@@ -76,10 +76,15 @@ namespace Bank
         public Bank()
         {
             _employees = new List<Employee>();
+            _transcations = new List<Transaction>();
             if(_clients == null)
                 _clients = new List<AbstractClient>();
             if (_ATM == null)
                 _ATM = new List<AutomatedTellerMachine>();
+            if (_cards == null)
+                _cards = new List<Card>();
+            if (_loans == null)
+                _loans = new List<Loan>();
         }
         public Bank(string swiftCode, string adress, string name, double saldo, string phoneNumber, string nameOfOwner, string surnameOfOwner, DateTime birthDateOfOwner, 
             int ageOfOwner, string JMBGOfOwner, string adressOfOwner, string phoneNumberOfOwner, string emailOfOwner = "")
@@ -187,7 +192,7 @@ namespace Bank
             {
                 var client = GetClient(JMBG);
                 long number= GenerateCardNumber();
-                client.OpenCard(card, accountNumber, number, GenerateNumber(1000, 10000), GenerateNumber(100, 1000), DateTime.Now.AddYears(3));
+                client.OpenCard(card, accountNumber, number, GenerateNumber(1000, 10000), GenerateNumber(100, 100), DateTime.Now.AddYears(3));
                 _cards.Add(client.GetCard(number));
             }
             catch (ArgumentException)
