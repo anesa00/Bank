@@ -34,18 +34,20 @@ internal class Program
 		Console.WriteLine("WELCOME! Choose one of option: ");
 		Console.WriteLine("What bank do you want?\n1: New Bank\n2: Free Bank");
 		var response = Convert.ToInt16(Console.ReadLine());
-		if (response == 1)
-		{
-			Console.WriteLine("If you are an employee or owner and wish to become an employee at the bank, please enter: 1");
-			Console.WriteLine("If you are a client or wish to become a client at the bank, please enter: 2");
-			Console.WriteLine("If you want to see information about the bank, please enter: 3");
-			response = Convert.ToInt16(Console.ReadLine());
-			switch (response)
+            Console.WriteLine("If you are an employee or owner and wish to become an employee at the bank, please enter: 1");
+            Console.WriteLine("If you are a client or wish to become a client at the bank, please enter: 2");
+            Console.WriteLine("If you want to see information about the bank, please enter: 3");
+            var temp = Convert.ToInt16(Console.ReadLine());
+            if (response == 1)
+			{
+			
+			switch (temp)
 			{
 				case 1:
-					EnteringData(newBank);
+					EnteringDataForEmployees(newBank);
 					break;
 				case 2:
+						EnteringDataForClients(newBank);
 					break;
 				case 3:
 					PrintInformationAboutBank(newBank);
@@ -58,16 +60,13 @@ internal class Program
 		}
 		else if (response == 2)
 		{
-			Console.WriteLine("If you are an employee or owner and wish to become an employee at the bank, please enter: 1");
-			Console.WriteLine("If you are a client or wish to become a client at the bank, please enter: 2");
-			Console.WriteLine("If you want to see information about the bank, please enter: 3");
-			response = Convert.ToInt16(Console.ReadLine());
-			switch (response)
+			switch (temp)
 			{
 				case 1:
-					EnteringData(freeBank);
+					EnteringDataForEmployees(freeBank);
 					break;
 				case 2:
+						EnteringDataForClients(newBank);
 					break;
 				case 3:
 					PrintInformationAboutBank(freeBank);
@@ -113,7 +112,7 @@ internal class Program
 		foreach (var a in bank.GetAutomatedTellerMachines())
 			Console.WriteLine(a.Adress);
 	}
-	static void EnteringData(Bank bank)
+	static void EnteringDataForEmployees(Bank bank)
 	{
 
 		byte response = 0;
@@ -264,7 +263,102 @@ internal class Program
 		} while (response != 0);
 
 	}
-	static void PrintInformationAboutEmployee(Employee employee)
+        static void EnteringDataForClients(Bank bank)
+		{
+            byte response = 0;
+            Console.WriteLine("Could you enter your JMBG, please?");
+            string JMBG = Console.ReadLine();
+            do
+            {
+                try
+                {
+                    var client = bank.GetClient(JMBG);
+                    if (client == null)
+                    {
+                        Console.WriteLine("There is no client with this JMBG");
+                        return;
+                    }
+                    Console.WriteLine("Choose one option: ");
+                    Console.WriteLine("1. Open online account");
+                    Console.WriteLine("2. Close online account");
+                    Console.WriteLine("3. Deposit");
+                    Console.WriteLine("4. Withdrawal");
+                    Console.WriteLine("5. Get information about a card");
+                    Console.WriteLine("6. Get information about a loan");
+                    Console.WriteLine("7. See all transactions");
+                    Console.WriteLine("8. See all cards");
+                    Console.WriteLine("9. See your portfolio");
+                    Console.WriteLine("10. See month statment");
+                    Console.WriteLine("0. Exit");
+                    response = Byte.Parse(Console.ReadLine());
+                    switch (response)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                            if (client is IClient ic)
+							{
+                                Console.WriteLine("Please enter the username: ");
+								var username = Console.ReadLine();
+                                Console.WriteLine("Please enter the password: ");
+                                var password = Console.ReadLine();
+								ic.OpenOnlineAccount(username, password);
+                            }
+                            break;
+                        case 2:
+							if (client is IClient)
+								(client as IClient).CloseOnlineAccount();
+                            break;
+						case 3:
+							double amount;
+							bool statement;
+							long accountNumber;
+							ChooseAccount(client, out accountNumber);
+							InputAmount(out amount, out statement);
+                            if (client.GetAccount(accountNumber) is IAccount account)
+                                account.FundsDeposit(amount);
+                            break;
+						case 4:
+                            ChooseAccount(client, out accountNumber);
+                            InputAmount(out amount, out statement);
+                            if (client.GetAccount(accountNumber) is IAccount account2)
+                                account2.FundsDeposit(amount);
+                            break;
+                        case 7:
+                            foreach (var item in client.Accounts)
+                            {
+                                Console.WriteLine(item.BankStatment());
+								Console.WriteLine();
+                            }
+							break;
+						case 10:
+                            Console.WriteLine("Please enter a month: ");
+                            var month = Convert.ToInt32(Console.ReadLine());
+                            foreach (var item in client.Accounts)
+                            {
+                                Console.WriteLine(item.MonthStatment(month));
+                                Console.WriteLine();
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("You haven't chosen any option.");
+                            break;
+                    }
+                }
+                catch (ArgumentException e)
+                {
+                    response = 0;
+                    Console.WriteLine(e);
+                }
+                catch (Exception e)
+                {
+                    response = 0;
+                    Console.WriteLine(e);
+                }
+            } while (response != 0);
+        }
+
+    static void PrintInformationAboutEmployee(Employee employee)
 	{
 		Console.WriteLine(employee.Person.Name + " " + employee.Person.Surname + " (" + employee.Person.Age + ")\n" + employee.Person.Adress + ", " +
 			employee.Person.PhoneNumber + "\nContract:\n" + employee.Contract + "\nSalary: " + employee.Salary + "\nPosition: " + employee.Position +
@@ -752,7 +846,7 @@ internal class Program
 				description = Console.ReadLine();
 				break;
 			} while (true);
-			if (response == "y")
+			if (response.ToLower() == "y")
 				bank.MakeATranscation(fromAccountNumber, toAccountNumber, amount, services, description);
 			else bank.MakeATranscation(toAccountNumber, amount, services, description);
         }
@@ -798,6 +892,37 @@ internal class Program
                 break;
             } while (true);
 			bank.BuyInstrument(fromAccountNumber, toAccountNumber, description, amount, type, instrument, quantity, services);
+        }
+		static void InputAmount(out double amount, out bool statement)
+		{
+			amount = 0;
+			statement = true;
+			do
+			{
+				Console.WriteLine("Please enter the amount: ");
+				amount = Convert.ToDouble(Console.ReadLine());
+				if (amount <= 0)
+				{
+					Console.WriteLine("Incorrect input!");
+					continue;
+				}
+				break;
+			} while (true);
+            Console.WriteLine("Do you want a transaction statement? (Y/N)" );
+			var response = Console.ReadLine();
+			if (response.ToLower() == "n")
+				statement = false;
+        }
+		static void ChooseAccount(AbstractClient client, out long accountNumber)
+		{
+			accountNumber = 0;
+            foreach (var item in client.Accounts)
+            {
+                Console.WriteLine("Do you want to use this account {0}? (Y/N)", item.GetAccountNumber());
+                var response = Console.ReadLine();
+				if (response.ToLower() == "y")
+					accountNumber = item.GetAccountNumber();
+            }
         }
     }
 }
