@@ -324,6 +324,17 @@ internal class Program
                             if (client.GetAccount(accountNumber) is IAccount account2)
                                 account2.FundsDeposit(amount);
                             break;
+						case 5:
+                            Console.WriteLine("Please enter a card number: ");
+							long cardNumber = Convert.ToInt64(Console.ReadLine());
+							PrintCards(new List<Card> { client.GetCard(cardNumber) });
+							break;
+						case 6:
+							if (client is IndvidualClient indvidualClient)
+								PrintLoan(indvidualClient.GetLoan());
+							else if(client is LegalEntityClient legalEntityClient)
+                                PrintLoan(legalEntityClient.GetLoan());
+                            break;
                         case 7:
                             foreach (var item in client.Accounts)
                             {
@@ -331,7 +342,15 @@ internal class Program
 								Console.WriteLine();
                             }
 							break;
-						case 10:
+						case 8:
+							PrintCards(client.Cards);
+							break;
+						case 9:
+                            ChooseAccount(client, out accountNumber);
+							if (client.GetAccount(accountNumber) is BrokerageAccount brokerage)
+								Console.WriteLine(brokerage.SeePortfolio());
+							break;
+                        case 10:
                             Console.WriteLine("Please enter a month: ");
                             var month = Convert.ToInt32(Console.ReadLine());
                             foreach (var item in client.Accounts)
